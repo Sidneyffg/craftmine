@@ -1,41 +1,45 @@
-#include "chunks.h"
+#include "ChunkManager.h"
+#include <iostream>
 
 
 
-void Chunks::init(unsigned short int renderDistance, unsigned int seed) {
-	Chunks::renderDistance = renderDistance;
-	Chunks::seed = seed;
+void ChunkManager::init(unsigned short int renderDistance, unsigned int seed) {
+	ChunkManager::renderDistance = renderDistance;
+	ChunkManager::seed = seed;
 
-	Chunks::bottomLeftChunkX = 0 - renderDistance / 2;
-	Chunks::bottomLeftChunkZ = 0 - renderDistance / 2;
+	ChunkManager::bottomLeftChunkX = 0 - renderDistance / 2;
+	ChunkManager::bottomLeftChunkZ = 0 - renderDistance / 2;
+	
+	ChunkManager::precalculatedBottomLeftChunkX = 0 - renderDistance / 2 - preGenNumber;
+	ChunkManager::precalculatedBottomLeftChunkZ = 0 - renderDistance / 2 - preGenNumber;
 
 	for (int i = 0; i < renderDistance; i++) {
-		Chunks::chunkData.push_back(std::vector<std::vector<char>>(renderDistance, std::vector<char>(65536)));
-		Chunks::chunkVertices.push_back(std::vector<std::vector<float>>(renderDistance, std::vector<float>()));
+		ChunkManager::chunkData.push_back(std::vector<std::vector<char>>(renderDistance, std::vector<char>(65536)));
+		ChunkManager::chunkVertices.push_back(std::vector<std::vector<float>>(renderDistance, std::vector<float>()));
 	}
 
-	Chunks::pn.seed(seed);
+	ChunkManager::pn.seed(seed);
 }
 
-void Chunks::pregenerateChunkData(int chunkX, int chunkY, unsigned int vectorDem1, unsigned int vectorDem2) {
-	int pos = chunkX * 100000 + chunkY;
+void ChunkManager::pregenerateChunkData(int chunkX, int chunkY) {
+	chunkPos pos{ chunkX,chunkY };
 	std::vector<unsigned short int> chunkPrecalculatedGrassHeight(256);
 	std::vector<unsigned short int> chunkPrecalculatedBiomes(256);
 	std::vector<bool> chunkPrecalculatedTreePositions(256);
 
-	srand(Chunks::seed * (chunkX * Chunks::seed + chunkY) + Chunks::seed);
+	srand(ChunkManager::seed * (chunkX * ChunkManager::seed + chunkY) + ChunkManager::seed);
 
 	for (int blockX = 0; blockX < 16; blockX++) {
 		float x = (float)(chunkX * 16 + blockX);
 		for (int blockZ = 0; blockZ < 16; blockZ++) {
 			float z = (float)(chunkY * 16 + blockZ);
 			chunkPrecalculatedGrassHeight[blockX * 16 + blockZ] = 30 + round(
-				pow(Chunks::pn.noise(x / 10, z / 10, 0), squareCurve) * 10 +
-				pow(Chunks::pn.noise(x / 40, z / 40, 0), squareCurve) * 20 +
-				pow(Chunks::pn.noise(x / 800, z / 800, 0), 4) * 142 +
-				pow(Chunks::pn.noise(x / 300, z / 300, 0.5f), 6) * 350
+				pow(ChunkManager::pn.noise(x / 10, z / 10, 0), squareCurve) * 10 +
+				pow(ChunkManager::pn.noise(x / 40, z / 40, 0), squareCurve) * 20 +
+				pow(ChunkManager::pn.noise(x / 800, z / 800, 0), 4) * 142 +
+				pow(ChunkManager::pn.noise(x / 300, z / 300, 0.5f), 6) * 350
 			);
-			short int warmth = round(Chunks::pn.noise(x / 600, z / 600, 0) * 100);
+			short int warmth = round(ChunkManager::pn.noise(x / 600, z / 600, 0) * 100);
 			if (warmth > 66) { warmth = 2; }
 			else if (warmth > 56) { warmth = 1; }
 			else if (warmth > 44) { warmth = 0; }
@@ -132,8 +136,8 @@ void Chunks::pregenerateChunkData(int chunkX, int chunkY, unsigned int vectorDem
 	precalculatedTreePositions.insert(std::make_pair(pos, chunkPrecalculatedTreePositions));
 }
 
-void Chunks::generateChunkData(int chunkX, int chunkY, unsigned int vectorDem1, unsigned int vectorDem2) {
-	int pos = chunkX * 100000 + chunkY;
+void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vectorDem1, unsigned int vectorDem2) {
+	chunkPos pos{chunkX,chunkY};
 	std::vector<unsigned short int> chunkPrecalculatedGrassHeight = precalculatedGrassHeight[pos];
 	std::vector<unsigned short int> chunkPrecalculatedBiomes = precalculatedBiomes[pos];
 	std::vector<bool> chunkPrecalculatedTreePositions = precalculatedTreePositions[pos];
@@ -167,64 +171,64 @@ void Chunks::generateChunkData(int chunkX, int chunkY, unsigned int vectorDem1, 
 				else {
 					blockID = 0;
 				}
-				Chunks::chunkData[vectorDem1][vectorDem2][blockX * 16 + blockZ + blockY * 256] = blockID;
+				ChunkManager::chunkData[vectorDem1][vectorDem2][blockX * 16 + blockZ + blockY * 256] = blockID;
 			}
 		}
 	}
 }
 
-void Chunks::generateChunkVertices(unsigned int vectorDem1, unsigned int vectorDem2) {
-	Chunks::chunkVertices[vectorDem1][vectorDem2].clear();
-	int chunkOffsetX = (Chunks::bottomLeftChunkX + vectorDem1) * 16;
-	int chunkOffsetZ = (Chunks::bottomLeftChunkZ + vectorDem2) * 16;
+void ChunkManager::generateChunkVertices(unsigned int vectorDem1, unsigned int vectorDem2) {
+	ChunkManager::chunkVertices[vectorDem1][vectorDem2].clear();
+	int chunkOffsetX = (ChunkManager::bottomLeftChunkX + vectorDem1) * 16;
+	int chunkOffsetZ = (ChunkManager::bottomLeftChunkZ + vectorDem2) * 16;
 	for (int y = 0; y < 256; y++) {
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
-				unsigned int block = Chunks::chunkData[vectorDem1][vectorDem2][y * 256 + x * 16 + z];
+				unsigned int block = ChunkManager::chunkData[vectorDem1][vectorDem2][y * 256 + x * 16 + z];
 				if (block != 0) {
 					int blockPosition = y * 256 + x * 16 + z;
 					bool sidesToRender[6] = { true,true,true,true,true,true }; //top-front-right-back-left-bottom
 
-					if ((blockPosition + 256) < 65536 && Chunks::chunkData[vectorDem1][vectorDem2][blockPosition + 256] != 0) { sidesToRender[0] = false; }
+					if ((blockPosition + 256) < 65536 && ChunkManager::chunkData[vectorDem1][vectorDem2][blockPosition + 256] != 0) { sidesToRender[0] = false; }
 
 					if ((blockPosition + 1) % 16 != 0) {
-						if (Chunks::chunkData[vectorDem1][vectorDem2][blockPosition + 1] != 0) {
+						if (ChunkManager::chunkData[vectorDem1][vectorDem2][blockPosition + 1] != 0) {
 							sidesToRender[1] = false;
 						}
 					}
-					else if (vectorDem2 + 1 != Chunks::renderDistance && Chunks::chunkData[vectorDem1][vectorDem2 + 1][blockPosition - z] != 0) {
+					else if (vectorDem2 + 1 != ChunkManager::renderDistance && ChunkManager::chunkData[vectorDem1][vectorDem2 + 1][blockPosition - z] != 0) {
 						sidesToRender[1] = false;
 					}
 
 					if (floor(blockPosition / 256) == floor((blockPosition + 16) / 256)) {
-						if (Chunks::chunkData[vectorDem1][vectorDem2][blockPosition + 16] != 0) {
+						if (ChunkManager::chunkData[vectorDem1][vectorDem2][blockPosition + 16] != 0) {
 							sidesToRender[2] = false;
 						}
 					}
-					else if (vectorDem1 + 1 != Chunks::renderDistance && Chunks::chunkData[vectorDem1 + 1][vectorDem2][blockPosition - x * 16] != 0) {
+					else if (vectorDem1 + 1 != ChunkManager::renderDistance && ChunkManager::chunkData[vectorDem1 + 1][vectorDem2][blockPosition - x * 16] != 0) {
 						sidesToRender[2] = false;
 					}
 
 
 					if (blockPosition % 16 != 0) {
-						if (blockPosition != 0 && Chunks::chunkData[vectorDem1][vectorDem2][blockPosition - 1] != 0) {
+						if (blockPosition != 0 && ChunkManager::chunkData[vectorDem1][vectorDem2][blockPosition - 1] != 0) {
 							sidesToRender[3] = false;
 						}
 					}
-					else if (vectorDem2 != 0 && Chunks::chunkData[vectorDem1][vectorDem2 - 1][blockPosition - z + 15] != 0) {
+					else if (vectorDem2 != 0 && ChunkManager::chunkData[vectorDem1][vectorDem2 - 1][blockPosition - z + 15] != 0) {
 						sidesToRender[3] = false;
 					}
 
 					if (floor(blockPosition / 256) == floor((float)(blockPosition - 16) / 256)) {
-						if (Chunks::chunkData[vectorDem1][vectorDem2][blockPosition - 16] != 0) {
+						if (ChunkManager::chunkData[vectorDem1][vectorDem2][blockPosition - 16] != 0) {
 							sidesToRender[4] = false;
 						}
 					}
-					else if (vectorDem1 != 0 && Chunks::chunkData[vectorDem1 - 1][vectorDem2][blockPosition + 240] != 0) {
+					else if (vectorDem1 != 0 && ChunkManager::chunkData[vectorDem1 - 1][vectorDem2][blockPosition + 240] != 0) {
 						sidesToRender[4] = false;
 					}
 
-					if ((blockPosition - 256) >= 0 && Chunks::chunkData[vectorDem1][vectorDem2][blockPosition - 256] != 0) { sidesToRender[5] = false; }
+					if ((blockPosition - 256) >= 0 && ChunkManager::chunkData[vectorDem1][vectorDem2][blockPosition - 256] != 0) { sidesToRender[5] = false; }
 
 
 					int blockX = x + chunkOffsetX;
@@ -232,27 +236,27 @@ void Chunks::generateChunkVertices(unsigned int vectorDem1, unsigned int vectorD
 					int blockZ = z + chunkOffsetZ;
 					for (int side = 0; side < 6; side++) {
 						if (sidesToRender[side]) {
-							float blockSideTexture = (float)Chunks::CUBEID_TO_SIDES[block * 6 + side];
+							float blockSideTexture = (float)ChunkManager::CUBEID_TO_SIDES[block * 6 + side];
 							float textureX, textureY;
-							textureY = floor(blockSideTexture / Chunks::textureWidth);
-							textureX = blockSideTexture - blockY * Chunks::textureWidth;
+							textureY = floor(blockSideTexture / ChunkManager::textureWidth);
+							textureX = blockSideTexture - blockY * ChunkManager::textureWidth;
 							for (int vertex = 0; vertex < 4; vertex++) {
-								Chunks::chunkVertices[vectorDem1][vectorDem2].push_back(blockX + Chunks::CUBE_VERTICES_POSITIONS[side * 12 + vertex * 3]);
-								Chunks::chunkVertices[vectorDem1][vectorDem2].push_back(blockY + Chunks::CUBE_VERTICES_POSITIONS[side * 12 + vertex * 3 + 1]);
-								Chunks::chunkVertices[vectorDem1][vectorDem2].push_back(blockZ + Chunks::CUBE_VERTICES_POSITIONS[side * 12 + vertex * 3 + 2]);
+								ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(blockX + ChunkManager::CUBE_VERTICES_POSITIONS[side * 12 + vertex * 3]);
+								ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(blockY + ChunkManager::CUBE_VERTICES_POSITIONS[side * 12 + vertex * 3 + 1]);
+								ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(blockZ + ChunkManager::CUBE_VERTICES_POSITIONS[side * 12 + vertex * 3 + 2]);
 
-								if (Chunks::TEXTURE_COORDS_X[vertex]) {
-									Chunks::chunkVertices[vectorDem1][vectorDem2].push_back((textureX + 1) / Chunks::textureWidth);
+								if (ChunkManager::TEXTURE_COORDS_X[vertex]) {
+									ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back((textureX + 1) / ChunkManager::textureWidth);
 								}
 								else {
-									Chunks::chunkVertices[vectorDem1][vectorDem2].push_back(textureX / Chunks::textureWidth);
+									ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(textureX / ChunkManager::textureWidth);
 								}
 
-								if (Chunks::TEXTURE_COORDS_Y[vertex]) {
-									Chunks::chunkVertices[vectorDem1][vectorDem2].push_back((textureY + 1) / Chunks::textureWidth);
+								if (ChunkManager::TEXTURE_COORDS_Y[vertex]) {
+									ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back((textureY + 1) / ChunkManager::textureWidth);
 								}
 								else {
-									Chunks::chunkVertices[vectorDem1][vectorDem2].push_back(textureY / Chunks::textureWidth);
+									ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(textureY / ChunkManager::textureWidth);
 								}
 							}
 						}

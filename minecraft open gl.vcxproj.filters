@@ -57,7 +57,7 @@
     <ClCompile Include="Time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Chunks.cpp">
+    <ClCompile Include="ChunkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -97,7 +97,7 @@
     <ClInclude Include="Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Chunks.h">
+    <ClInclude Include="ChunkManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
