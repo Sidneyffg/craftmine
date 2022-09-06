@@ -6,11 +6,11 @@
 #ifndef CHUNKS_CLASS_H
 #define CHUNKS_CLASS_H
 
-class ChunkManager {
+class Chunks {
 public:
 	void init(unsigned short int renderDistance, unsigned int seed);
 
-	void pregenerateChunkData(int chunkX, int chunkY);
+	void pregenerateChunkData(int chunkX, int chunkY, unsigned int vectorDem1, unsigned int vectorDem2);
 	void generateChunkData(int chunkX, int chunkY, unsigned int vectorDem1, unsigned int vectorDem2);
 	void generateChunkVertices(unsigned int vectorDem1, unsigned int vectorDem2);
 
@@ -20,10 +20,8 @@ public:
 	int bottomLeftChunkX;
 	int bottomLeftChunkZ;
 
-	int precalculatedBottomLeftChunkX;
-	int precalculatedBottomLeftChunkZ;
-
-	int preGenNumber = 5;
+	int preCalculatedBottomLeftChunkX;
+	int preCalculatedBottomLeftChunkZ;
 
 	unsigned int seed;
 
@@ -31,16 +29,12 @@ public:
 
 	struct chunkPos {
 		int x, y;
-		
-		bool operator<(const chunkPos& p) const {
-			return x < p.x || (x == p.x && y < p.y);
-		}
 	};
 
 private:
-	std::map<chunkPos, std::vector<unsigned short int>> precalculatedGrassHeight;
-	std::map<chunkPos, std::vector<unsigned short int>> precalculatedBiomes;
-	std::map<chunkPos, std::vector<bool>> precalculatedTreePositions;
+	std::map<int, std::vector<unsigned short int>> precalculatedGrassHeight;
+	std::map<int, std::vector<unsigned short int>> precalculatedBiomes;
+	std::map<int, std::vector<bool>> precalculatedTreePositions;
 
 	PerlinNoise pn;
 

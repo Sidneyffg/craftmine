@@ -149,7 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ChunkManager.cpp" />
+    <ClCompile Include="Chunks.cpp" />
     <ClCompile Include="craftmine.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Camera.cpp" />
@@ -169,7 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="ChunkManager.h" />
+    <ClInclude Include="Chunks.h" />
     <ClInclude Include="EBO.h" />
     <ClInclude Include="Craftmine.h" />
     <ClInclude Include="perlinNoise.h" />

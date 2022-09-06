@@ -16,7 +16,6 @@
 #include "Camera.h"
 #include "Craftmine.h"
 #include "Time.h"
-#include <map>
 
 int width = 1920;
 int height = 1080;
@@ -88,7 +87,7 @@ int main()
 
 	// Main while loop
 	bool reloadVAO = false;
-	omp_set_num_threads(3);
+	omp_set_num_threads(2);
 	int id;
 #pragma omp parallel
 	{
@@ -158,14 +157,9 @@ int main()
 				else if (keyPressed[2]) {
 					keyPressed[2] = false;
 				}
-				if (!reloadVAO && craftmine.loadSideChunks(camera.Position)) {
-					reloadVAO = true;
-				}
-			}
-		}
-		else if (id == 2) {
-			while (!glfwWindowShouldClose(window)) {
-				craftmine.checkForChunksToLoad(camera.Position);
+				//if (!reloadVAO && craftmine.loadSideChunks(camera.Position)) {
+				//	reloadVAO = true;
+				//}
 			}
 		}
 	}
