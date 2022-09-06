@@ -16,6 +16,7 @@
 #include "Camera.h"
 #include "Craftmine.h"
 #include "Time.h"
+#include <map>
 
 int width = 1920;
 int height = 1080;
@@ -53,7 +54,7 @@ int main()
 	craftmine.generateVertices();
 
 	Time time(false);
-	
+
 	Shader shaderProgram("default.vert", "default.frag");
 
 	Texture texture("textures/block.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -87,7 +88,7 @@ int main()
 
 	// Main while loop
 	bool reloadVAO = false;
-	omp_set_num_threads(2);
+	omp_set_num_threads(3);
 	int id;
 #pragma omp parallel
 	{
@@ -104,7 +105,7 @@ int main()
 					EBO1.Update(craftmine.allChunkIndices.data(), craftmine.allChunkIndices.size() * sizeof(unsigned int));
 					reloadVAO = false;
 				}
-				
+
 				//background color
 				glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
 				// Clean the back buffer and assign the new color to it
@@ -157,9 +158,14 @@ int main()
 				else if (keyPressed[2]) {
 					keyPressed[2] = false;
 				}
-				//if (!reloadVAO && craftmine.loadSideChunks(camera.Position)) {
-				//	reloadVAO = true;
-				//}
+				if (!reloadVAO && craftmine.loadSideChunks(camera.Position)) {
+					reloadVAO = true;
+				}
+			}
+		}
+		else if (id == 2) {
+			while (!glfwWindowShouldClose(window)) {
+				craftmine.checkForChunksToLoad(camera.Position);
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 #ifndef CRAFTMINE_CLASS_H
 #define CRAFTMINE_CLASS_H
 
-#include "Chunks.h"
+#include "ChunkManager.h"
 #include <vector>
 //#include <glm/glm.hpp> included by Camera.h
 //#include <GLFW/glfw3.h> included by Camera.h
@@ -33,8 +33,10 @@ public:
 	std::vector<float> allChunkVertices;
 	std::vector<unsigned int> allChunkIndices;
 
+	void checkForChunksToLoad(glm::vec3 camPos);
+
 private:
-	Chunks chunks;
+	ChunkManager chunkManager;
 	void reloadChunks(glm::vec3 camPos);
 
 	void loadTopChunks();
