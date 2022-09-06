@@ -47,7 +47,7 @@ int main()
 
 	glViewport(0, 0, width, height);
 
-	Craftmine craftmine(32, 874356, window);
+	Craftmine craftmine(32, 69, window);
 	std::cout << "Generating chunks..." << std::endl;
 	craftmine.generateStartChunks();
 	std::cout << "Finished generating chunks" << std::endl;
