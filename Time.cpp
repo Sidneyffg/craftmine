@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include "Time.h"
 
+
 Time::Time(bool logFPS) {
 	Time::lastTime = glfwGetTime();
 	Time::logTime = Time::lastTime;
@@ -12,12 +13,12 @@ Time::Time(bool logFPS) {
 }
 
 // Updates deltaTime to current frame
-void Time::tick() {
+void Time::tick(glm::vec3 camPos) {
 	Time::currentTime = glfwGetTime() * 1000;
 	Time::delta = Time::currentTime - Time::lastTime;
 	Time::logTime += Time::delta;
 	if (Time::logTime > 1000) {
-		if (Time::logFPS == true) { std::cout << 1000 / Time::delta << std::endl; }
+		if (Time::logFPS == true) { std::cout <<  "X: " << camPos[0] << " Y: " << camPos[1] << " Z: " << camPos[2] << " FPS: " << 1000 / Time::delta << std::endl; }
 		Time::logTime -= 1000;
 	}
 	Time::lastTime = Time::currentTime;

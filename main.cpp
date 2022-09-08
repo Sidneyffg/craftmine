@@ -53,7 +53,7 @@ int main()
 	std::cout << "Finished generating chunks" << std::endl;
 	craftmine.generateVertices();
 
-	Time time(false);
+	Time time(true);
 
 	Shader shaderProgram("default.vert", "default.frag");
 
@@ -95,7 +95,7 @@ int main()
 		id = omp_get_thread_num();
 		if (id == 0) {
 			while (!glfwWindowShouldClose(window)) {
-				time.tick();
+				time.tick(camera.Position);
 				if (reloadVAO) {
 					std::cout << "reloading vao..." << std::endl;
 					craftmine.generateVertices();
@@ -124,6 +124,7 @@ int main()
 				glfwSwapBuffers(window);
 				// Take care of all GLFW events
 				glfwPollEvents();
+
 			}
 		}
 		else if (id == 1) {

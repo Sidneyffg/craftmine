@@ -23,7 +23,7 @@ public:
 	int precalculatedBottomLeftChunkX;
 	int precalculatedBottomLeftChunkZ;
 
-	int preGenNumber = 5;
+	int preGenNumber = 10;
 
 	unsigned int seed;
 

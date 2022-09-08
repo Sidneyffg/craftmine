@@ -81,7 +81,8 @@ void Craftmine::generateVertices() {
 
 
 bool Craftmine::loadSideChunks(glm::vec3 camPos) {
-	/*if (camPos[2] > (chunkManager.bottomLeftChunkZ + chunkManager.renderDistance / 2) * 16 + 8) {
+	if (camPos[2] > (chunkManager.bottomLeftChunkZ + chunkManager.renderDistance / 2) * 16 + 8) {
+		std::cout << "top" << std::endl;
 		Craftmine::loadTopChunks();
 		bool response = true;
 		while (response) {
@@ -90,6 +91,7 @@ bool Craftmine::loadSideChunks(glm::vec3 camPos) {
 		return true;
 	}
 	else if (camPos[2] < (chunkManager.bottomLeftChunkZ + chunkManager.renderDistance / 2) * 16 - 8) {
+		std::cout << "bottom" << std::endl;
 		Craftmine::loadBottomChunks();
 		bool response = true;
 		while (response) {
@@ -97,7 +99,8 @@ bool Craftmine::loadSideChunks(glm::vec3 camPos) {
 		}
 		return true;
 	}
-	else */if (camPos[0] > (chunkManager.bottomLeftChunkX + chunkManager.renderDistance / 2) * 16 + 8) {
+	else if (camPos[0] > (chunkManager.bottomLeftChunkX + chunkManager.renderDistance / 2) * 16 + 8) {
+		std::cout << "right" << std::endl;
 		Craftmine::loadRightChunks();
 		bool response = true;
 		while (response) {
@@ -106,6 +109,7 @@ bool Craftmine::loadSideChunks(glm::vec3 camPos) {
 		return true;
 	}
 	else if (camPos[0] < (chunkManager.bottomLeftChunkX + chunkManager.renderDistance / 2) * 16 - 8) {
+		std::cout << "left" << std::endl;
 		Craftmine::loadLeftChunks();
 		bool response = true;
 		while (response) {
@@ -187,22 +191,30 @@ void Craftmine::tp(float x, float y, float z, Camera* camera) {
 }
 
 void Craftmine::checkForChunksToLoad(glm::vec3 camPos) {
-	/*if (camPos[2] > (chunkManager.precalculatedBottomLeftChunkZ - chunkManager.preGenNumber * 2 + chunkManager.renderDistance / 2) * 16 + 8) {
-
+	if (camPos[2] > (chunkManager.precalculatedBottomLeftChunkZ + chunkManager.preGenNumber + chunkManager.renderDistance / 2) * 16 + 8) {
+		for (int i = 0; i < chunkManager.renderDistance + chunkManager.preGenNumber * 2; i++) {
+			std::cout << "onder" << std::endl;
+			chunkManager.pregenerateChunkData(chunkManager.precalculatedBottomLeftChunkX + i, chunkManager.precalculatedBottomLeftChunkZ + chunkManager.renderDistance +  chunkManager.preGenNumber * 2 + 1);
+		}
+		chunkManager.precalculatedBottomLeftChunkZ++;
 	}
-	else if (camPos[2] < (chunkManager.precalculatedBottomLeftChunkZ - chunkManager.preGenNumber * 2 + chunkManager.renderDistance / 2) * 16 - 8) {
-
+	else if (camPos[2] < (chunkManager.precalculatedBottomLeftChunkZ + chunkManager.preGenNumber + chunkManager.renderDistance / 2) * 16 - 8) {
+		for (int i = 0; i < chunkManager.renderDistance + chunkManager.preGenNumber * 2; i++) {
+			std::cout << "boven" << std::endl;
+			chunkManager.pregenerateChunkData(chunkManager.precalculatedBottomLeftChunkX + i, chunkManager.precalculatedBottomLeftChunkZ - 1);
+		}
+		chunkManager.precalculatedBottomLeftChunkZ--;
 	}
-	else */if (camPos[0] > (chunkManager.precalculatedBottomLeftChunkX + chunkManager.preGenNumber + chunkManager.renderDistance / 2) * 16 + 8) {
-		for (int i = 0; i < chunkManager.renderDistance + chunkManager.preGenNumber; i++) {
-			std::cout << "x: " << chunkManager.bottomLeftChunkX + chunkManager.renderDistance + 1 << " y: " << chunkManager.precalculatedBottomLeftChunkZ + i << std::endl;
+	else if (camPos[0] > (chunkManager.precalculatedBottomLeftChunkX + chunkManager.preGenNumber + chunkManager.renderDistance / 2) * 16 + 8) {
+		for (int i = 0; i < chunkManager.renderDistance + chunkManager.preGenNumber * 2; i++) {
+			std::cout << "rechts" << std::endl;
 			chunkManager.pregenerateChunkData(chunkManager.bottomLeftChunkX + chunkManager.renderDistance + 1, chunkManager.precalculatedBottomLeftChunkZ + i);
 		}
 		chunkManager.precalculatedBottomLeftChunkX++;
 	}
 	else if (camPos[0] < (chunkManager.precalculatedBottomLeftChunkX + chunkManager.preGenNumber + chunkManager.renderDistance / 2) * 16 - 8) {
 		for (int i = 0; i < chunkManager.renderDistance + chunkManager.preGenNumber * 2; i++) {
-			std::cout << "x: " << chunkManager.precalculatedBottomLeftChunkX - 1 << " z: " << chunkManager.precalculatedBottomLeftChunkZ + i << std::endl;
+			std::cout << "links" << std::endl;
 			chunkManager.pregenerateChunkData(chunkManager.precalculatedBottomLeftChunkX - 1, chunkManager.precalculatedBottomLeftChunkZ + i);
 		}
 		chunkManager.precalculatedBottomLeftChunkX--;
