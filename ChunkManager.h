@@ -143,6 +143,18 @@ private:
 		STONE_GROUND = 3,
 		ICE_GROUND = 19
 	};
+	class BiomeInfoClass {
+	public:
+		BiomeInfoClass(int treeAmount, int treeType, int groundBlockType) {
+			this->treeAmount = treeAmount;
+			this->treeType = treeType;
+			this->groundBlockType = groundBlockType;
+		}
+
+		int treeAmount;
+		int treeType;
+		int groundBlockType;
+	};
 
 	BiomeInfo biomeInfo[16][3] = { //tree amount, tree type, ground block type
 		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //SEA,

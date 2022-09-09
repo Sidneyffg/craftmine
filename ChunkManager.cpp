@@ -142,6 +142,9 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 	std::vector<unsigned short int> chunkPrecalculatedBiomes = precalculatedBiomes[pos];
 	std::vector<bool> chunkPrecalculatedTreePositions = precalculatedTreePositions[pos];
 
+	std::vector<bool> multiChunkPrecalculatedTreePositions(20 * 20);
+
+	//tree leaves
 	for (int x = 0; x < 16; x++) {
 		for (int z = 0; z < 16; z++) {
 			unsigned short int pos = x * 16 + z;
@@ -159,7 +162,7 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 			}
 		}
 	}
-	//loop over x and z
+	//terrain and tree trunks (will overwrite tree leaves)
 	for (int blockX = 0; blockX < 16; blockX++) {
 		float x = (float)(chunkX * 16 + blockX);
 		for (int blockZ = 0; blockZ < 16; blockZ++) {
@@ -183,7 +186,7 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 				else if (blockY == grassHeight) {
 					blockID = biomeInfo[biome][2];
 				}
-				else if (generateTree && blockY < grassHeight + 7) {
+				else if (generateTree && blockY <= grassHeight + 6) {
 					blockID = treeID;
 				}
 				else {
