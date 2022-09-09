@@ -141,6 +141,24 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 	std::vector<unsigned short int> chunkPrecalculatedGrassHeight = precalculatedGrassHeight[pos];
 	std::vector<unsigned short int> chunkPrecalculatedBiomes = precalculatedBiomes[pos];
 	std::vector<bool> chunkPrecalculatedTreePositions = precalculatedTreePositions[pos];
+
+	for (int x = 0; x < 16; x++) {
+		for (int z = 0; z < 16; z++) {
+			unsigned short int pos = x * 16 + z;
+			if (chunkPrecalculatedTreePositions[pos]) {
+				unsigned short int treeHeight = chunkPrecalculatedGrassHeight[pos] + 5;
+				for (int leaveX = 0; leaveX < 5; leaveX++) {
+					for (int leaveZ = 0; leaveZ < 5; leaveZ++) {
+						if(x + (leaveX - 2) >= 0 && x + (leaveX - 2) < 16 && z + (leaveZ - 2) >= 0 && z + (leaveZ - 2) < 16){
+							for (int i = 0; i < treeLeavesHeight[leaveX + leaveZ * 5]; i++) {
+								ChunkManager::chunkData[vectorDem1][vectorDem2][(leaveX - 2 + x) * 16 + (leaveZ - 2 + z) + (treeHeight + i) * 256] = 16;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	//loop over x and z
 	for (int blockX = 0; blockX < 16; blockX++) {
 		float x = (float)(chunkX * 16 + blockX);
@@ -165,13 +183,16 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 				else if (blockY == grassHeight) {
 					blockID = biomeInfo[biome][2];
 				}
-				else if (generateTree && blockY < grassHeight + 5) {
+				else if (generateTree && blockY < grassHeight + 7) {
 					blockID = treeID;
 				}
 				else {
 					blockID = 0;
 				}
-				ChunkManager::chunkData[vectorDem1][vectorDem2][blockX * 16 + blockZ + blockY * 256] = blockID;
+
+				if (blockID != 0) {
+					ChunkManager::chunkData[vectorDem1][vectorDem2][blockX * 16 + blockZ + blockY * 256] = blockID;
+				}
 			}
 		}
 	}

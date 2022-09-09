@@ -181,6 +181,14 @@ private:
 		ICY_STONE_HILLS,
 		ICE_HILLS
 	};
+
+	unsigned short int treeLeavesHeight[25]{
+		2,2,2,2,2,
+		2,3,4,3,2,
+		2,4,4,4,2,
+		2,3,4,3,2,
+		2,2,2,2,2
+	};
 };
 
 #endif
