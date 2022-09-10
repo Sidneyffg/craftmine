@@ -150,18 +150,21 @@ private:
 	};
 	class BiomeInfoClass {
 	public:
-		BiomeInfoClass(int treeAmount, int treeType, int groundBlockType) {
+		BiomeInfoClass(int treeAmount, std::vector<unsigned int>, int groundBlockType) {
 			this->treeAmount = treeAmount;
 			this->treeType = treeType;
 			this->groundBlockType = groundBlockType;
 		}
 
 		int treeAmount;
-		int treeType;
+		std::vector<unsigned int> treeType;
 		int groundBlockType;
 	};
 
-	BiomeInfo biomeInfo[16][3] = { //tree amount, tree type, ground block type
+
+	std::vector<BiomeInfoClass *> biomeInfo;
+
+	/*BiomeInfo biomeInfo[16][3] = { //tree amount, tree type, ground block type
 		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //SEA,
 		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //HALF_FROZEN_SEA,
 		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //FROZEN_SEA,
@@ -178,7 +181,7 @@ private:
 		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //STONE_HILLS,
 		{NO_TREES,NO_TREE_TYPE,ICE_GROUND}, //ICY_STONE_HILLS,
 		{NO_TREES,NO_TREE_TYPE,ICE_GROUND} //ICE_HILLS
-	};
+	};*/
 
 	enum Biomes :unsigned short int {
 		SEA,

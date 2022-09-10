@@ -19,6 +19,10 @@ void ChunkManager::init(unsigned short int renderDistance, unsigned int seed) {
 	}
 
 	ChunkManager::pn.seed(seed);
+
+	for (int i = 0; i < 16; i++) {
+		ChunkManager::biomeInfo.push_back(new BiomeInfoClass(100,1,1));
+	}
 }
 
 void ChunkManager::pregenerateChunkData(int chunkX, int chunkY) {
@@ -120,7 +124,7 @@ void ChunkManager::pregenerateChunkData(int chunkX, int chunkY) {
 				chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = false;
 			}
 			else {
-				int treeChance = biomeInfo[chunkPrecalculatedBiomes[blockX * 16 + blockZ]][0];
+				int treeChance = biomeInfo[chunkPrecalculatedBiomes[blockX * 16 + blockZ]]->treeAmount;
 				if (treeChance != -1 && rand() % treeChance == 0) {
 					chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = true;
 				}
@@ -179,7 +183,7 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 
 			//getting biome
 
-			int treeID = biomeInfo[biome][1];
+			int treeID = biomeInfo[biome]->treeType;
 			for (int blockY = 0; blockY < 256; blockY++) {
 				int blockID;
 				if (blockY == 59) {
@@ -189,7 +193,7 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 					blockID = 3;
 				}
 				else if (blockY == grassHeight) {
-					blockID = biomeInfo[biome][2];
+					blockID = biomeInfo[biome]->groundBlockType;
 				}
 				else if (generateTree && blockY <= grassHeight + 6) {
 					blockID = treeID;
