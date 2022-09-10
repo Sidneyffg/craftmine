@@ -32,6 +32,11 @@ public:
 	struct chunkPos {
 		int x, y;
 
+		void changePos(int x, int y) {
+			this->x = x;
+			this->y = y;
+		}
+
 		bool operator<(const chunkPos& p) const {
 			return x < p.x || (x == p.x && y < p.y);
 		}

@@ -142,19 +142,24 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 	std::vector<unsigned short int> chunkPrecalculatedBiomes = precalculatedBiomes[pos];
 	std::vector<bool> chunkPrecalculatedTreePositions = precalculatedTreePositions[pos];
 
-	std::vector<bool> multiChunkPrecalculatedTreePositions(20 * 20);
 
 	//tree leaves
-	for (int x = 0; x < 16; x++) {
-		for (int z = 0; z < 16; z++) {
-			unsigned short int pos = x * 16 + z;
-			if (chunkPrecalculatedTreePositions[pos]) {
-				unsigned short int treeHeight = chunkPrecalculatedGrassHeight[pos] + 5;
-				for (int leaveX = 0; leaveX < 5; leaveX++) {
-					for (int leaveZ = 0; leaveZ < 5; leaveZ++) {
-						if(x + (leaveX - 2) >= 0 && x + (leaveX - 2) < 16 && z + (leaveZ - 2) >= 0 && z + (leaveZ - 2) < 16){
-							for (int i = 0; i < treeLeavesHeight[leaveX + leaveZ * 5]; i++) {
-								ChunkManager::chunkData[vectorDem1][vectorDem2][(leaveX - 2 + x) * 16 + (leaveZ - 2 + z) + (treeHeight + i) * 256] = 16;
+	chunkPos treeChunkPos;
+	for (int treeChunkX = 0; treeChunkX < 3; treeChunkX++) {
+		for (int treeChunkZ = 0; treeChunkZ < 3; treeChunkZ++) {
+			treeChunkPos.changePos(chunkX + (treeChunkX - 1), chunkY + (treeChunkZ - 1));
+			for (int x = 0; x < 16; x++) {
+				for (int z = 0; z < 16; z++) {
+					unsigned short int pos = x * 16 + z;
+					if (precalculatedTreePositions[treeChunkPos][pos] && x + (treeChunkX - 1) * 16 > -3 && x + (treeChunkX - 1) * 16 < 18 && z + (treeChunkZ - 1) * 16 > -3 && z + (treeChunkZ - 1) * 16 < 18) {
+						unsigned short int treeHeight = precalculatedGrassHeight[treeChunkPos][pos] + 5;
+						for (int leaveX = 0; leaveX < 5; leaveX++) {
+							for (int leaveZ = 0; leaveZ < 5; leaveZ++) {
+								if (x + (treeChunkX - 1) * 16 + (leaveX - 2) >= 0 && x + (treeChunkX - 1) * 16 + (leaveX - 2) < 16 && z + (treeChunkZ - 1) * 16 + (leaveZ - 2) >= 0 && z + (treeChunkZ - 1) * 16 + (leaveZ - 2) < 16) {
+									for (int i = 0; i < treeLeavesHeight[leaveX + leaveZ * 5]; i++) {
+										ChunkManager::chunkData[vectorDem1][vectorDem2][(leaveX - 2 + x + (treeChunkX - 1) * 16) * 16 + (leaveZ - 2 + z + (treeChunkZ - 1) * 16) + (treeHeight + i) * 256] = 16;
+									}
+								}
 							}
 						}
 					}
