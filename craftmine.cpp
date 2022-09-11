@@ -189,7 +189,7 @@ void Craftmine::tp(float x, float y, float z, Camera* camera) {
 void Craftmine::checkForChunksToLoad(glm::vec3 camPos) {
 	if (camPos[2] > (chunkManager.precalculatedBottomLeftChunkZ + chunkManager.preGenNumber + chunkManager.renderDistance / 2) * 16 + 8) {
 		for (int i = 0; i < chunkManager.renderDistance + chunkManager.preGenNumber * 2; i++) {
-			chunkManager.pregenerateChunkData(chunkManager.precalculatedBottomLeftChunkX + i, chunkManager.precalculatedBottomLeftChunkZ + chunkManager.renderDistance +  chunkManager.preGenNumber * 2 + 1);
+			chunkManager.pregenerateChunkData(chunkManager.precalculatedBottomLeftChunkX + i, chunkManager.precalculatedBottomLeftChunkZ + chunkManager.renderDistance + chunkManager.preGenNumber * 2 + 1);
 		}
 		chunkManager.precalculatedBottomLeftChunkZ++;
 	}

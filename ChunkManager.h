@@ -23,7 +23,7 @@ public:
 	int precalculatedBottomLeftChunkX;
 	int precalculatedBottomLeftChunkZ;
 
-	int preGenNumber = 10;
+	int preGenNumber = 100;
 
 	unsigned int seed;
 
@@ -126,10 +126,6 @@ private:
 
 	enum BiomeInfo {
 		NO_TREES = -1,
-		FEW_FEW_TREES = 99999,
-		FEW_TREES = 9999,
-		MANY_TREES = 15,
-		MANY_MANY_TREES = 10,
 
 		NO_TREE_TYPE = -1,
 		OAK_TREE_TYPE = 11,
@@ -150,33 +146,43 @@ private:
 	};
 	class BiomeInfoClass {
 	public:
-		BiomeInfoClass(int treeAmount, std::vector<unsigned int>, int groundBlockType) {
+		BiomeInfoClass(int treeAmount, unsigned int treeType[2],unsigned int treePercentage, unsigned int groundBlockType[2], unsigned int groundBlockPercentage ) {
 			this->treeAmount = treeAmount;
-			this->treeType = treeType;
-			this->groundBlockType = groundBlockType;
+			this->treeType[0] = treeType[0];
+			this->treeType[1] = treeType[1];
+			this->treePercentage = treePercentage;
+			this->groundBlockType[0] = groundBlockType[0];
+			this->groundBlockType[1] = groundBlockType[1];
+			this->groundBlockPercentage = groundBlockPercentage;
 		}
 
 		int treeAmount;
-		std::vector<unsigned int> treeType;
-		int groundBlockType;
+		unsigned int treeType[2];
+		unsigned int treePercentage;
+		unsigned int groundBlockType[2];
+		unsigned int groundBlockPercentage;
 	};
-
-
-	std::vector<BiomeInfoClass *> biomeInfo;
+	std::vector<BiomeInfoClass*> biomeInfo;
+	void addBiomes() {
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SAND_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(40000, new unsigned int[2] {ACACIA_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(200, new unsigned int[2] {BIRCH_TREE_TYPE, OAK_TREE_TYPE}, 50, new unsigned int[2] {GRASS_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SAND_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(17, new unsigned int[2] {JUNGLE_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(350, new unsigned int[2] {DARK_OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, GRASS_GROUND}, 50));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SANDSTONE_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SANDSTONE_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, 18}, 50));
+		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, NULL}, 100));
+	}
 
 	/*BiomeInfo biomeInfo[16][3] = { //tree amount, tree type, ground block type
-		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //SEA,
-		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //HALF_FROZEN_SEA,
-		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //FROZEN_SEA,
-		{NO_TREES,NO_TREE_TYPE,SAND_GROUND}, //DESERT,
-		{FEW_TREES,ACACIA_TREE_TYPE,GRASS_GROUND}, //SAVANA,
-		{FEW_TREES,OAK_TREE_TYPE,GRASS_GROUND}, //PLAINS,
-		{MANY_TREES,BIRCH_TREE_TYPE,GRASS_GROUND}, //FOREST,
-		{FEW_FEW_TREES,OAK_TREE_TYPE,SNOW_GRASS_GROUND}, //SNOW_PLAINS,
-		{NO_TREES,NO_TREE_TYPE,RED_SAND_GROUND}, //RED_DESERT,
-		{MANY_MANY_TREES,JUNGLE_TREE_TYPE,GRASS_GROUND}, //JUNGLE,
-		{FEW_TREES,DARK_OAK_TREE_TYPE,SNOW_GRASS_GROUND}, //TUNDRA,
-		{NO_TREES,NO_TREE_TYPE,RED_SANDSTONE_GROUND}, //BADLANDS,
 		{NO_TREES,NO_TREE_TYPE,SANDSTONE_GROUND}, //SANDSTONE_HILLS,
 		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //STONE_HILLS,
 		{NO_TREES,NO_TREE_TYPE,ICE_GROUND}, //ICY_STONE_HILLS,

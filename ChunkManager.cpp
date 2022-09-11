@@ -20,9 +20,8 @@ void ChunkManager::init(unsigned short int renderDistance, unsigned int seed) {
 
 	ChunkManager::pn.seed(seed);
 
-	for (int i = 0; i < 16; i++) {
-		ChunkManager::biomeInfo.push_back(new BiomeInfoClass(100,1,1));
-	}
+	
+	addBiomes();
 }
 
 void ChunkManager::pregenerateChunkData(int chunkX, int chunkY) {
@@ -43,7 +42,7 @@ void ChunkManager::pregenerateChunkData(int chunkX, int chunkY) {
 				pow(ChunkManager::pn.noise(x / 800, z / 800, 0), 4) * 142 +
 				pow(ChunkManager::pn.noise(x / 300, z / 300, 0.5f), 6) * 350
 			);
-			short int warmth = round(ChunkManager::pn.noise(x / 600, z / 600, 0) * 100);
+			short int warmth = round(ChunkManager::pn.noise(x / 2000, z / 2000, 0) * 100); //600
 			if (warmth > 66) { warmth = 2; }
 			else if (warmth > 56) { warmth = 1; }
 			else if (warmth > 44) { warmth = 0; }
@@ -146,7 +145,7 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 	std::vector<unsigned short int> chunkPrecalculatedBiomes = precalculatedBiomes[pos];
 	std::vector<bool> chunkPrecalculatedTreePositions = precalculatedTreePositions[pos];
 
-
+	srand(ChunkManager::seed * (chunkX * ChunkManager::seed + chunkY) + ChunkManager::seed);
 	//tree leaves
 	chunkPos treeChunkPos;
 	for (int treeChunkX = 0; treeChunkX < 3; treeChunkX++) {
@@ -183,7 +182,15 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 
 			//getting biome
 
-			int treeID = biomeInfo[biome]->treeType;
+			int treeID;
+			if (generateTree) {
+				if (rand() % 100 < biomeInfo[biome]->treePercentage) {
+					treeID = biomeInfo[biome]->treeType[0];
+				}
+				else {
+					treeID = biomeInfo[biome]->treeType[1];
+				}
+			}
 			for (int blockY = 0; blockY < 256; blockY++) {
 				int blockID;
 				if (blockY == 59) {
@@ -193,7 +200,12 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 					blockID = 3;
 				}
 				else if (blockY == grassHeight) {
-					blockID = biomeInfo[biome]->groundBlockType;
+					if (rand() % 100 < biomeInfo[biome]->groundBlockPercentage) {
+						blockID = biomeInfo[biome]->groundBlockType[0];
+					}
+					else {
+						blockID = biomeInfo[biome]->groundBlockType[1];
+					}
 				}
 				else if (generateTree && blockY <= grassHeight + 6) {
 					blockID = treeID;

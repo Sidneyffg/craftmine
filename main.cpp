@@ -159,9 +159,9 @@ int main()
 				else if (keyPressed[2]) {
 					keyPressed[2] = false;
 				}
-				//if (!reloadVAO && craftmine.loadSideChunks(camera.Position)) {
-				//	reloadVAO = true;
-				//}
+				if (!reloadVAO && craftmine.loadSideChunks(camera.Position)) {
+					reloadVAO = true;
+				}
 			}
 		}
 		else if (id == 2) {
