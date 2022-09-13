@@ -182,13 +182,6 @@ private:
 		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, NULL}, 100));
 	}
 
-	/*BiomeInfo biomeInfo[16][3] = { //tree amount, tree type, ground block type
-		{NO_TREES,NO_TREE_TYPE,SANDSTONE_GROUND}, //SANDSTONE_HILLS,
-		{NO_TREES,NO_TREE_TYPE,STONE_GROUND}, //STONE_HILLS,
-		{NO_TREES,NO_TREE_TYPE,ICE_GROUND}, //ICY_STONE_HILLS,
-		{NO_TREES,NO_TREE_TYPE,ICE_GROUND} //ICE_HILLS
-	};*/
-
 	enum Biomes :unsigned short int {
 		SEA,
 		HALF_FROZEN_SEA,
@@ -208,12 +201,44 @@ private:
 		ICE_HILLS
 	};
 
-	unsigned short int treeLeavesHeight[25]{
-		2,2,2,2,2,
-		2,3,4,3,2,
-		2,4,4,4,2,
-		2,3,4,3,2,
-		2,2,2,2,2
+
+	class TreePreset {
+	public:
+		unsigned short int treeX;
+		unsigned short int treeY;
+		unsigned short int treeZ;
+
+		//unsigned short int treePreset[5];
+		std::vector<unsigned short int> treePreset;
+		std::vector<unsigned short int> spawnChance;
+	};
+
+	std::vector<TreePreset*> treePresets{
+		new TreePreset {
+			5,
+			8,
+			5,
+			{
+				0,0,0,0,0,0,0,0,0,0,0,0,OAK_TREE_TYPE,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,OAK_TREE_TYPE,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,OAK_TREE_TYPE,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,OAK_TREE_TYPE,0,0,0,0,0,0,0,0,0,0,0,0,
+				16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+				16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+				0,0,0,0,0,0,16,16,16,0,0,16,16,16,0,0,16,16,16,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,16,0,0,0,16,16,16,0,0,0,16,0,0,0,0,0,0,0,
+			},
+			{
+				0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,
+				100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,
+				50,100,100,100,50,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,50,100,100,100,50,
+				0,0,0,0,0,0,100,100,100,0,0,100,100,100,0,0,100,100,100,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,100,0,0,0,100,100,100,0,0,0,100,0,0,0,0,0,0,0,
+			}
+		}
 	};
 };
 

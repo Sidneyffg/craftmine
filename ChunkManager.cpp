@@ -20,7 +20,6 @@ void ChunkManager::init(unsigned short int renderDistance, unsigned int seed) {
 
 	ChunkManager::pn.seed(seed);
 
-	
 	addBiomes();
 }
 
@@ -154,13 +153,21 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
 					unsigned short int pos = x * 16 + z;
-					if (precalculatedTreePositions[treeChunkPos][pos] && x + (treeChunkX - 1) * 16 > -3 && x + (treeChunkX - 1) * 16 < 18 && z + (treeChunkZ - 1) * 16 > -3 && z + (treeChunkZ - 1) * 16 < 18) {
-						unsigned short int treeHeight = precalculatedGrassHeight[treeChunkPos][pos] + 5;
-						for (int leaveX = 0; leaveX < 5; leaveX++) {
-							for (int leaveZ = 0; leaveZ < 5; leaveZ++) {
-								if (x + (treeChunkX - 1) * 16 + (leaveX - 2) >= 0 && x + (treeChunkX - 1) * 16 + (leaveX - 2) < 16 && z + (treeChunkZ - 1) * 16 + (leaveZ - 2) >= 0 && z + (treeChunkZ - 1) * 16 + (leaveZ - 2) < 16) {
-									for (int i = 0; i < treeLeavesHeight[leaveX + leaveZ * 5]; i++) {
-										ChunkManager::chunkData[vectorDem1][vectorDem2][(leaveX - 2 + x + (treeChunkX - 1) * 16) * 16 + (leaveZ - 2 + z + (treeChunkZ - 1) * 16) + (treeHeight + i) * 256] = 16;
+					if (precalculatedTreePositions[treeChunkPos][pos]) {
+						unsigned short int treeID = 0;
+						unsigned short int halfTreeX = floor(treePresets[treeID]->treeX / 2);
+						unsigned short int halfTreeZ = floor(treePresets[treeID]->treeZ / 2);
+						if (x + (treeChunkX - 1) * 16 + halfTreeX > -1 && x + (treeChunkX - 1) * 16 - halfTreeX < 16 && z + (treeChunkZ - 1) * 16  + halfTreeZ > -1 && z + (treeChunkZ - 1) * 16 - halfTreeZ < 16) {
+							unsigned short int treeHeight = precalculatedGrassHeight[treeChunkPos][pos] + 1;
+							for (int leaveX = 0; leaveX < treePresets[treeID]->treeX; leaveX++) {
+								for (int leaveZ = 0; leaveZ < treePresets[treeID]->treeZ; leaveZ++) {
+									if (x + (treeChunkX - 1) * 16 + (leaveX - halfTreeX) > -1 && x + (treeChunkX - 1) * 16 + (leaveX - halfTreeX) < 16 && z + (treeChunkZ - 1) * 16 + (leaveZ - halfTreeZ) > -1 && z + (treeChunkZ - 1) * 16 + (leaveZ - halfTreeZ) < 16) {
+										for (int leaveY = 0; leaveY < treePresets[treeID]->treeY; leaveY++) {
+											unsigned short int treeBlockPos = leaveX * treePresets[treeID]->treeZ + leaveY * treePresets[treeID]->treeX * treePresets[treeID]->treeZ + leaveZ;
+											if (treePresets[treeID]->treePreset[treeBlockPos] != 0 && rand() % 100 < treePresets[treeID]->spawnChance[treeBlockPos]) {
+												ChunkManager::chunkData[vectorDem1][vectorDem2][(leaveX - halfTreeX + x + (treeChunkX - 1) * 16) * 16 + (leaveZ - halfTreeZ + z + (treeChunkZ - 1) * 16) + (treeHeight + leaveY) * 256] = treePresets[treeID]->treePreset[treeBlockPos];
+											}
+										}
 									}
 								}
 							}
@@ -183,14 +190,6 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 			//getting biome
 
 			int treeID;
-			if (generateTree) {
-				if (rand() % 100 < biomeInfo[biome]->treePercentage) {
-					treeID = biomeInfo[biome]->treeType[0];
-				}
-				else {
-					treeID = biomeInfo[biome]->treeType[1];
-				}
-			}
 			for (int blockY = 0; blockY < 256; blockY++) {
 				int blockID;
 				if (blockY == 59) {
@@ -206,9 +205,6 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 					else {
 						blockID = biomeInfo[biome]->groundBlockType[1];
 					}
-				}
-				else if (generateTree && blockY <= grassHeight + 6) {
-					blockID = treeID;
 				}
 				else {
 					blockID = 0;

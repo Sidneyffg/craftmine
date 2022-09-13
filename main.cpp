@@ -60,7 +60,7 @@ int main()
 	Texture texture("textures/block.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	texture.texUnit(shaderProgram, "tex0", 0);
 
-
+	
 	// Generates Vertex Array Object
 	VAO VAO1;
 	VAO1.Bind();
@@ -120,6 +120,7 @@ int main()
 				VAO1.Bind();
 				// Draw primitives, number of indices, datatype of indices, index of indices
 				glDrawElements(GL_TRIANGLES, craftmine.allChunkIndices.size(), GL_UNSIGNED_INT, 0);
+
 				// Swap the back buffer with the front buffer
 				glfwSwapBuffers(window);
 				// Take care of all GLFW events
@@ -152,7 +153,7 @@ int main()
 				if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) { //tp naar 0,0
 					if (!keyPressed[2]) {
 						keyPressed[2] = true;
-						craftmine.tp(0.0f, 250.0f, 0.0f, &camera);
+						//craftmine.tp(0.0f, 250.0f, 0.0f, &camera);
 						reloadVAO = true;
 					}
 				}
@@ -166,16 +167,16 @@ int main()
 		}
 		else if (id == 2) {
 			while (!glfwWindowShouldClose(window)) {
-				craftmine.checkForChunksToLoad(camera.Position);
+				//craftmine.checkForChunksToLoad(camera.Position);
 			}
 		}
 	}
 
 
 	// Delete all the objects we've created
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
+	//VAO1.Delete();
+	//VBO1.Delete();
+	//EBO1.Delete();
 	texture.Delete();
 
 	shaderProgram.Delete();
