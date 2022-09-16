@@ -19,15 +19,13 @@ void ChunkManager::init(unsigned short int renderDistance, unsigned int seed) {
 	}
 
 	ChunkManager::pn.seed(seed);
-
-	addBiomes();
 }
 
 void ChunkManager::pregenerateChunkData(int chunkX, int chunkY) {
 	chunkPos pos{ chunkX,chunkY };
 	std::vector<unsigned short int> chunkPrecalculatedGrassHeight(256);
 	std::vector<unsigned short int> chunkPrecalculatedBiomes(256);
-	std::vector<bool> chunkPrecalculatedTreePositions(256);
+	std::vector<char> chunkPrecalculatedTreePositions(256);
 
 	srand(ChunkManager::seed * (chunkX * ChunkManager::seed + chunkY) + ChunkManager::seed);
 
@@ -113,21 +111,26 @@ void ChunkManager::pregenerateChunkData(int chunkX, int chunkY) {
 				}
 			}
 			if (blockZ != 0 && chunkPrecalculatedTreePositions[blockX * 16 + blockZ - 1]) {
-				chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = false;
+				chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = NO_TREE;
 			}
 			else if (blockX != 0 && chunkPrecalculatedTreePositions[blockX * 16 + blockZ - 16]) {
-				chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = false;
+				chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = NO_TREE;
 			}
 			else if (blockZ != 0 && blockX != 0 && chunkPrecalculatedTreePositions[blockX * 16 + blockZ - 17]) {
-				chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = false;
+				chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = NO_TREE;
 			}
 			else {
 				int treeChance = biomeInfo[chunkPrecalculatedBiomes[blockX * 16 + blockZ]]->treeAmount;
 				if (treeChance != -1 && rand() % treeChance == 0) {
-					chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = true;
+					if (rand() % 2 < 1) {
+						chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = FLIPPED_TREE;
+					}
+					else {
+						chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = YES_TREE;
+					}
 				}
 				else {
-					chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = false;
+					chunkPrecalculatedTreePositions[blockX * 16 + blockZ] = NO_TREE;
 				}
 			}
 		}
@@ -142,7 +145,7 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 	chunkPos pos{ chunkX,chunkY };
 	std::vector<unsigned short int> chunkPrecalculatedGrassHeight = precalculatedGrassHeight[pos];
 	std::vector<unsigned short int> chunkPrecalculatedBiomes = precalculatedBiomes[pos];
-	std::vector<bool> chunkPrecalculatedTreePositions = precalculatedTreePositions[pos];
+	std::vector<char> chunkPrecalculatedTreePositions = precalculatedTreePositions[pos];
 
 	srand(ChunkManager::seed * (chunkX * ChunkManager::seed + chunkY) + ChunkManager::seed);
 	//tree leaves
@@ -153,20 +156,26 @@ void ChunkManager::generateChunkData(int chunkX, int chunkY, unsigned int vector
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
 					unsigned short int pos = x * 16 + z;
-					if (precalculatedTreePositions[treeChunkPos][pos]) {
-						unsigned short int treeID = 1;
+					if (precalculatedTreePositions[treeChunkPos][pos] != NO_TREE) {
+						unsigned short int treeID = 2;
 						unsigned short int halfTreeX = floor(treePresets[treeID]->treeX / 2);
 						unsigned short int halfTreeZ = floor(treePresets[treeID]->treeZ / 2);
 
 						short int fullX = x + (treeChunkX - 1) * 16 - treePresets[treeID]->trunkOffsetX;
 						short int fullZ = z + (treeChunkZ - 1) * 16 - treePresets[treeID]->trunkOffsetZ;
-						if (fullX + halfTreeX >= 0 && fullX - halfTreeX < 16 && fullZ  + halfTreeZ >= 0 && fullZ - halfTreeZ < 16) {
+						if (fullX + halfTreeX >= 0 && fullX - halfTreeX < 16 && fullZ + halfTreeZ >= 0 && fullZ - halfTreeZ < 16) {
 							unsigned short int treeHeight = precalculatedGrassHeight[treeChunkPos][pos] + 1;
 							for (int leaveX = 0; leaveX < treePresets[treeID]->treeX; leaveX++) {
 								for (int leaveZ = 0; leaveZ < treePresets[treeID]->treeZ; leaveZ++) {
 									if (fullX + (leaveX - halfTreeX) >= 0 && fullX + (leaveX - halfTreeX) < 16 && fullZ + (leaveZ - halfTreeZ) >= 0 && fullZ + (leaveZ - halfTreeZ) < 16) {
 										for (int leaveY = 0; leaveY < treePresets[treeID]->treeY; leaveY++) {
-											unsigned short int treeBlockPos = leaveX * treePresets[treeID]->treeZ + leaveY * treePresets[treeID]->treeX * treePresets[treeID]->treeZ + leaveZ;
+											unsigned short int treeBlockPos;
+											if (precalculatedTreePositions[treeChunkPos][pos] == FLIPPED_TREE) {
+												treeBlockPos = abs(leaveX - (treePresets[treeID]->treeX - 1)) * treePresets[treeID]->treeZ + leaveY * treePresets[treeID]->treeX * treePresets[treeID]->treeZ + abs(leaveZ - (treePresets[treeID]->treeZ - 1));
+											}
+											else {
+												treeBlockPos = leaveX * treePresets[treeID]->treeZ + leaveY * treePresets[treeID]->treeX * treePresets[treeID]->treeZ + leaveZ;
+											}
 											if (treePresets[treeID]->treePreset[treeBlockPos] != 0 && rand() % 100 < treePresets[treeID]->spawnChance[treeBlockPos]) {
 												ChunkManager::chunkData[vectorDem1][vectorDem2][(leaveX - halfTreeX + fullX) * 16 + (leaveZ - halfTreeZ + fullZ) + (treeHeight + leaveY) * 256] = treePresets[treeID]->treePreset[treeBlockPos];
 											}

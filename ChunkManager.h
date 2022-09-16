@@ -45,7 +45,12 @@ public:
 private:
 	std::map<chunkPos, std::vector<unsigned short int>> precalculatedGrassHeight;
 	std::map<chunkPos, std::vector<unsigned short int>> precalculatedBiomes;
-	std::map<chunkPos, std::vector<bool>> precalculatedTreePositions;
+	std::map<chunkPos, std::vector<char>> precalculatedTreePositions;
+	enum treeNums : char {
+		NO_TREE,
+		YES_TREE,
+		FLIPPED_TREE
+	};
 
 	PerlinNoise pn;
 
@@ -146,7 +151,7 @@ private:
 	};
 	class BiomeInfoClass {
 	public:
-		BiomeInfoClass(int treeAmount, unsigned int treeType[2],unsigned int treePercentage, unsigned int groundBlockType[2], unsigned int groundBlockPercentage ) {
+		BiomeInfoClass(int treeAmount, unsigned int treeType[2], unsigned int treePercentage, unsigned int groundBlockType[2], unsigned int groundBlockPercentage) {
 			this->treeAmount = treeAmount;
 			this->treeType[0] = treeType[0];
 			this->treeType[1] = treeType[1];
@@ -162,25 +167,25 @@ private:
 		unsigned int groundBlockType[2];
 		unsigned int groundBlockPercentage;
 	};
-	std::vector<BiomeInfoClass*> biomeInfo;
-	void addBiomes() {
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SAND_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(40000, new unsigned int[2] {ACACIA_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(200, new unsigned int[2] {BIRCH_TREE_TYPE, OAK_TREE_TYPE}, 50, new unsigned int[2] {GRASS_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SAND_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(17, new unsigned int[2] {JUNGLE_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(350, new unsigned int[2] {DARK_OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, GRASS_GROUND}, 50));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SANDSTONE_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SANDSTONE_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, 18}, 50));
-		biomeInfo.push_back(new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, NULL}, 100));
-	}
+	std::vector<BiomeInfoClass*> biomeInfo{
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SAND_GROUND, NULL}, 100),
+		new BiomeInfoClass(40000, new unsigned int[2] {ACACIA_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100),
+		new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100),
+		new BiomeInfoClass(200, new unsigned int[2] {BIRCH_TREE_TYPE, OAK_TREE_TYPE}, 50, new unsigned int[2] {GRASS_GROUND, NULL}, 100),
+		new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, NULL}, 100),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SAND_GROUND, NULL}, 100),
+		new BiomeInfoClass(17, new unsigned int[2] {JUNGLE_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100),
+		new BiomeInfoClass(350, new unsigned int[2] {DARK_OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, GRASS_GROUND}, 50),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SANDSTONE_GROUND, NULL}, 100),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SANDSTONE_GROUND, NULL}, 100),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, 18}, 50),
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, NULL}, 100)
+	};
+
 
 	enum Biomes :unsigned short int {
 		SEA,
@@ -272,6 +277,21 @@ private:
 				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,100,100,100,100,0,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,0,100,100,100,100,100,0,
 				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,100,100,100,0,0,0,100,100,100,100,100,0,0,0,100,100,100,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,0
+			}
+		},
+		new TreePreset {
+			7,
+			8,
+			10,
+
+			0,
+			-1,
+
+			{
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,ACACIA_TREE_TYPE,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,ACACIA_TREE_TYPE,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,ACACIA_TREE_TYPE,ACACIA_TREE_TYPE,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,16,16,0,0,0,0,0,0,16,16,16,16,16,0,0,0,0,0,16,16,ACACIA_TREE_TYPE,16,16,ACACIA_TREE_TYPE,0,0,0,0,16,16,16,16,16,0,0,0,0,0,0,16,16,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,16,16,0,0,0,0,0,0,0,16,16,16,0,0,ACACIA_TREE_TYPE,0,0,0,0,16,16,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,ACACIA_TREE_TYPE,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,16,16,16,16,0,0,0,0,16,16,16,16,16,16,16,0,0,0,16,16,16,16,16,16,16,0,0,0,16,16,16,ACACIA_TREE_TYPE,16,16,16,0,0,0,16,16,16,16,16,16,16,0,0,0,16,16,16,16,16,16,16,0,0,0,0,16,16,16,16,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16,0,0,0,0,0,0,0,0,16,16,16,0,0,0,0,0,0,16,16,16,16,16,0,0,0,0,0,0,16,16,16,0,0,0,0,0,0,0,0,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+			},
+			{
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,100,100,0,0,0,0,0,0,100,100,100,100,100,0,0,0,0,0,100,100,100,100,100,100,0,0,0,0,100,100,100,100,100,0,0,0,0,0,0,100,100,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,100,100,0,0,0,0,0,0,0,100,100,100,0,0,100,0,0,0,0,100,100,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,100,100,100,100,0,0,0,0,100,100,100,100,100,100,100,0,0,0,100,100,100,100,100,100,100,0,0,0,100,100,100,100,100,100,100,0,0,0,100,100,100,100,100,100,100,0,0,0,100,100,100,100,100,100,100,0,0,0,0,100,100,100,100,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,100,100,100,0,0,0,0,0,0,100,100,100,100,100,0,0,0,0,0,0,100,100,100,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 			}
 		}
 	};
