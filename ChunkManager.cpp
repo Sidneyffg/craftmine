@@ -39,7 +39,7 @@ void ChunkManager::pregenerateChunkData(int chunkX, int chunkY) {
 				pow(ChunkManager::pn.noise(x / 800, z / 800, 0), 4) * 142 +
 				pow(ChunkManager::pn.noise(x / 300, z / 300, 0.5f), 6) * 350
 			);
-			short int warmth = round(ChunkManager::pn.noise(x / 2000, z / 2000, 0) * 100); //600
+			short int warmth = round(ChunkManager::pn.noise(x / 2000, z / 2000, 0) * 100); //original is 600
 			if (warmth > 66) { warmth = 2; }
 			else if (warmth > 56) { warmth = 1; }
 			else if (warmth > 44) { warmth = 0; }
@@ -311,6 +311,9 @@ void ChunkManager::generateChunkVertices(unsigned int vectorDem1, unsigned int v
 								else {
 									ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(textureY / ChunkManager::textureWidth);
 								}
+								ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(normals[side][0]);
+								ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(normals[side][1]);
+								ChunkManager::chunkVertices[vectorDem1][vectorDem2].push_back(normals[side][2]);
 							}
 						}
 					}

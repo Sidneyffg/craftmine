@@ -75,16 +75,16 @@
     <LibraryPath>C:\programmeren\c++\minecraft open gl\libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\programmeren\c++\minecraft open gl\libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\programmeren\c++\minecraft open gl\libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Workshop\source\repos\craftmine\libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Workshop\source\repos\craftmine\libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\programmeren\c++\minecraft open gl\libraries\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\programmeren\c++\minecraft open gl\libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\programmeren\c++\minecraft open gl\libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\programmeren\c++\minecraft open gl\libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Workshop\source\repos\craftmine\libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Workshop\source\repos\craftmine\libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

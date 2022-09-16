@@ -151,39 +151,43 @@ private:
 	};
 	class BiomeInfoClass {
 	public:
-		BiomeInfoClass(int treeAmount, unsigned int treeType[2], unsigned int treePercentage, unsigned int groundBlockType[2], unsigned int groundBlockPercentage) {
+		BiomeInfoClass(int treeAmount, unsigned int treeTrunkType[2], unsigned int treePercentage, unsigned int groundBlockType[2], unsigned int groundBlockPercentage, std::vector<unsigned short int> treeTypes) {
 			this->treeAmount = treeAmount;
-			this->treeType[0] = treeType[0];
-			this->treeType[1] = treeType[1];
+			this->treeTrunkType[0] = treeTrunkType[0];
+			this->treeTrunkType[1] = treeTrunkType[1];
 			this->treePercentage = treePercentage;
 			this->groundBlockType[0] = groundBlockType[0];
 			this->groundBlockType[1] = groundBlockType[1];
 			this->groundBlockPercentage = groundBlockPercentage;
+
+			this->treeTypes = treeTypes;
 		}
 
 		int treeAmount;
-		unsigned int treeType[2];
+		unsigned int treeTrunkType[2];
 		unsigned int treePercentage;
 		unsigned int groundBlockType[2];
 		unsigned int groundBlockPercentage;
+
+		std::vector<unsigned short int> treeTypes;
 	};
 	std::vector<BiomeInfoClass*> biomeInfo{
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SAND_GROUND, NULL}, 100),
-		new BiomeInfoClass(40000, new unsigned int[2] {ACACIA_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100),
-		new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100),
-		new BiomeInfoClass(200, new unsigned int[2] {BIRCH_TREE_TYPE, OAK_TREE_TYPE}, 50, new unsigned int[2] {GRASS_GROUND, NULL}, 100),
-		new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, NULL}, 100),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SAND_GROUND, NULL}, 100),
-		new BiomeInfoClass(17, new unsigned int[2] {JUNGLE_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100),
-		new BiomeInfoClass(350, new unsigned int[2] {DARK_OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, GRASS_GROUND}, 50),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SANDSTONE_GROUND, NULL}, 100),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SANDSTONE_GROUND, NULL}, 100),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, 18}, 50),
-		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, NULL}, 100)
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //SEA
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //HALF_FROZEN_SEA
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //FROZEN_SEA
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SAND_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //DESERT
+		new BiomeInfoClass(40000, new unsigned int[2] {ACACIA_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100, std::vector<unsigned short int> {1,2}), //SAVANA
+		new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100, std::vector<unsigned short int> {0}), //PLAINS
+		new BiomeInfoClass(200, new unsigned int[2] {BIRCH_TREE_TYPE, OAK_TREE_TYPE}, 50, new unsigned int[2] {GRASS_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //FOREST
+		new BiomeInfoClass(40000, new unsigned int[2] {OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //SNOW_PLAINS
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SAND_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //RED_DESERT
+		new BiomeInfoClass(17, new unsigned int[2] {JUNGLE_TREE_TYPE, NULL}, 100, new unsigned int[2] {GRASS_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //JUNGLE
+		new BiomeInfoClass(350, new unsigned int[2] {DARK_OAK_TREE_TYPE, NULL}, 100, new unsigned int[2] {SNOW_GRASS_GROUND, GRASS_GROUND}, 50, std::vector<unsigned short int> {}), //TUNDRA
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {RED_SANDSTONE_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //BADLANDS
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {SANDSTONE_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //SANDSTONE_HILLS
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {STONE_GROUND, NULL}, 100, std::vector<unsigned short int> {}), //STONE_HILLS
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, 18}, 50, std::vector<unsigned short int> {}), //ICY_STONE_HILLS
+		new BiomeInfoClass(NO_TREES, new unsigned int[2] {NULL, NULL}, NULL, new unsigned int[2] {ICE_GROUND, NULL}, 100, std::vector<unsigned short int> {}) //ICE_HILLS
 	};
 
 
@@ -204,6 +208,15 @@ private:
 		STONE_HILLS,
 		ICY_STONE_HILLS,
 		ICE_HILLS
+	};
+
+	float normals[6][3] = {
+		{0,1,0},
+		{0,0,1},
+		{1,0,0},
+		{0,0,-1},
+		{-1,0,0},
+		{0,-1,0}
 	};
 
 

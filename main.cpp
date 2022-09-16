@@ -126,6 +126,27 @@ int main()
 
 	Time time(true);
 
+	GLfloat vertices2[8 * 3] = {
+		-256.0f, 256.0f, 0.0f, 0.0f,0.0f, 0,1,0,
+		256.0f, 256.0f, 0.0f, 0.0f,0.0f, 0,1,0,
+		-256.0f, 0.0f, 0.0f, 0.0f,0.0f, 0,1,0,
+	};
+
+	GLuint indices[3] = {
+		0,1,2
+	};
+
+	VAO vao;
+	vao.Bind();
+
+	VBO vbo(vertices2, sizeof(vertices2));
+	EBO ebo(indices, sizeof(indices));
+
+	vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	vao.LinkAttrib(vbo, 1, 2, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	vao.LinkAttrib(vbo, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+
+
 	Shader shaderProgram("default.vert", "default.frag");
 
 	Texture texture("textures/block.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -142,15 +163,16 @@ int main()
 	EBO EBO1(craftmine.allChunkIndices.data(), craftmine.allChunkIndices.size() * sizeof(unsigned int));
 
 	// Links VBO to VAO
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 2, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(5 * sizeof(float)));
 	// Unbind all to prevent accidentally modifying them
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 
 	Camera camera(width, height, glm::vec3(0.0f, 250.0f, 0.0f));
@@ -191,6 +213,13 @@ int main()
 				VAO1.Bind();
 				// Draw primitives, number of indices, datatype of indices, index of indices
 				glDrawElements(GL_TRIANGLES, craftmine.allChunkIndices.size(), GL_UNSIGNED_INT, 0);
+				VAO1.Unbind();
+
+				vao.Bind();
+
+				glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+
+				vao.Unbind();
 
 				// Swap the back buffer with the front buffer
 				glfwSwapBuffers(window);
@@ -245,9 +274,9 @@ int main()
 
 
 	// Delete all the objects we've created
-	//VAO1.Delete();
-	//VBO1.Delete();
-	//EBO1.Delete();
+	VAO1.Delete();
+	VBO1.Delete();
+	EBO1.Delete();
 	texture.Delete();
 
 	shaderProgram.Delete();
