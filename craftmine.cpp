@@ -57,23 +57,25 @@ void Craftmine::generateStartChunks() {
 }
 
 void Craftmine::generateVertices() {
-	allChunkVertices.clear();
-	allChunkIndices.clear();
+	newAllChunkVertices.clear();
+	newAllChunkIndices.clear();
 	std::cout << "generating vertices..." << std::endl;
 	for (int i = 0; i < chunkManager.renderDistance; i++) {
 		for (int j = 0; j < chunkManager.renderDistance; j++) {
-			Craftmine::allChunkVertices.insert(Craftmine::allChunkVertices.end(), chunkManager.chunkVertices[j][i].begin(), chunkManager.chunkVertices[j][i].end());
+			Craftmine::newAllChunkVertices.insert(Craftmine::newAllChunkVertices.end(), chunkManager.chunkVertices[j][i].begin(), chunkManager.chunkVertices[j][i].end());
 		}
 	}
-	Craftmine::allChunkVertices.shrink_to_fit();
-	int indicesSize = Craftmine::allChunkVertices.size() / 5 / 4;
-	Craftmine::allChunkIndices.reserve(indicesSize * 6);
+	Craftmine::newAllChunkVertices.shrink_to_fit();
+	int indicesSize = Craftmine::newAllChunkVertices.size() / 5 / 4;
+	Craftmine::newAllChunkIndices.reserve(indicesSize * 6);
 	//std::cout << "indicesSize: " << indicesSize * 6 << std::endl;
 	for (int i = 0; i < indicesSize; i++) {
 		for (int j = 0; j < 6; j++) {
-			Craftmine::allChunkIndices.push_back(Craftmine::CUBE_INDICES[j] + i * 4);
+			Craftmine::newAllChunkIndices.push_back(Craftmine::CUBE_INDICES[j] + i * 4);
 		}
 	}
+	allChunkIndices = newAllChunkIndices;
+	allChunkVertices = newAllChunkVertices;
 }
 
 

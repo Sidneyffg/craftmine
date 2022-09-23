@@ -136,17 +136,7 @@ int main()
 		0,1,2
 	};
 
-	VAO vao;
-	vao.Bind();
-
-	VBO vbo(vertices2, sizeof(vertices2));
-	EBO ebo(indices, sizeof(indices));
-
-	vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
-	vao.LinkAttrib(vbo, 1, 2, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	vao.LinkAttrib(vbo, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-
-
+	
 	Shader shaderProgram("default.vert", "default.frag");
 
 	Texture texture("textures/block.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -191,7 +181,7 @@ int main()
 				time.tick(camera.Position);
 				if (reloadVAO) {
 					std::cout << "reloading vao..." << std::endl;
-					craftmine.generateVertices();
+					
 					// Generates Vertex Buffer Object and links it to vertices
 					VBO1.Update(craftmine.allChunkVertices.data(), craftmine.allChunkVertices.size() * sizeof(float));
 					// Generates Element Buffer Object and links it to indices
@@ -215,11 +205,6 @@ int main()
 				glDrawElements(GL_TRIANGLES, craftmine.allChunkIndices.size(), GL_UNSIGNED_INT, 0);
 				VAO1.Unbind();
 
-				vao.Bind();
-
-				glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
-
-				vao.Unbind();
 
 				// Swap the back buffer with the front buffer
 				glfwSwapBuffers(window);
@@ -234,6 +219,7 @@ int main()
 					if (!keyPressed[0]) {
 						keyPressed[0] = true;
 						//craftmine.changeRenderDistance(craftmine.renderDistance - 1, camera.Position);
+						craftmine.generateVertices();
 						reloadVAO = true;
 					}
 				}
@@ -244,6 +230,7 @@ int main()
 					if (!keyPressed[1]) {
 						keyPressed[1] = true;
 						//craftmine.changeRenderDistance(craftmine.renderDistance + 1, camera.Position);
+						craftmine.generateVertices();
 						reloadVAO = true;
 					}
 				}
@@ -254,6 +241,7 @@ int main()
 					if (!keyPressed[2]) {
 						keyPressed[2] = true;
 						//craftmine.tp(0.0f, 250.0f, 0.0f, &camera);
+						craftmine.generateVertices();
 						reloadVAO = true;
 					}
 				}
@@ -261,6 +249,7 @@ int main()
 					keyPressed[2] = false;
 				}
 				if (!reloadVAO && craftmine.loadSideChunks(camera.Position)) {
+					craftmine.generateVertices();
 					reloadVAO = true;
 				}
 			}

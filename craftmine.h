@@ -31,7 +31,9 @@ public:
 	void tp(float x, float y, float z, Camera* camera);
 
 	std::vector<float> allChunkVertices;
+	std::vector<float> newAllChunkVertices;
 	std::vector<unsigned int> allChunkIndices;
+	std::vector<unsigned int> newAllChunkIndices;
 
 	void checkForChunksToLoad(glm::vec3 camPos);
 
